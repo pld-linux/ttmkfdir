@@ -1,0 +1,10 @@
+--- ttmkfdir2/directory.cpp.orig	Tue Jan 11 01:44:44 2000
++++ ttmkfdir2/directory.cpp	Fri Oct  4 21:04:44 2002
+@@ -51,5 +51,6 @@
+ 	    (std::toupper(name[len - 3]) == 'T') &&
+ 	    (std::toupper(name[len - 2]) == 'T') &&
+ 	    ((std::toupper(name[len - 1]) == 'F') ||
+-	     (std::toupper(name[len - 1]) == 'C')));
++	     (std::toupper(name[len - 1]) == 'C')) &&
++	    (strchr(name, ' ')==NULL)); /* filenames with spaces corrupt fonts.dir */
+ }
