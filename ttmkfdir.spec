@@ -7,6 +7,7 @@ Epoch:		1
 License:	unknown
 Group:		Applications/File
 Source0:	%{name}2.tar.bz2
+# Source0-md5: 643d8b84da8eeed136867abe87cae29e
 Source1:	%{name}2.1
 Patch0:		%{name}2-libtool.patch
 Patch1:		%{name}2-foundrynames.patch
