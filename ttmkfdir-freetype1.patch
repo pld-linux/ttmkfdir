@@ -1,0 +1,11 @@
+--- Makefile~	Fri Apr 12 13:23:34 2002
++++ Makefile	Fri Apr 12 13:24:34 2002
+@@ -1,7 +1,7 @@
+ FREETYPE_LIB=-lttf
+ 
+ CC=gcc
+-CFLAGS=-Wall -pedantic $(OPT_FLAGS)
++CFLAGS=-Wall -pedantic $(OPT_FLAGS) -I/usr/include/freetype1
+ LDFALGS=$(FREETYPE_LIB) -s
+ 
+ all: ttmkfdir
