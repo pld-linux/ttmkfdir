@@ -2,15 +2,15 @@ Summary:	Tool for creating fonts.dir for TrueType fonts
 Summary(pl):	Narzêdzie do tworzenia plików fonts.dir dla fontów TrueType
 Name:		ttmkfdir
 Version:	none
-Release:	1
-Group:		X11/Applications
+Release:	2
+Group:		Applications/File
 License:	GPL
 Source0:	http://www.darmstadt.gmd.de/~pommnitz/TrueType/%{name}.tar.gz
 Patch0:		%{name}-make.patch
-BuildRequires:	freetype1-devel
+Patch1:		%{name}-foundrynames.patch
+Patch2:		%{name}-nospaces.patch
+BuildRequires:	freetype1-devel >= 1.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		_prefix	/usr/X11R6
 
 %description
 This program creates 'font.dir' files for TrueType fonts. These files
@@ -23,11 +23,13 @@ potrzebne, aby móc korzystaæ z fontów TrueType w X Window.
 %prep
 %setup -q -c %{name}
 %patch0 -p1
+%patch1 -p2
+%patch2 -p2
 
 %build
-LDFLAGS="%{rpmldflags}" ; export LDFLAGS
-
-%{__make} OPT_FLAGS="%{rpmcflags}"
+%{__make} \
+	OPT_FLAGS="%{rpmcflags}" \
+	LDFLAGS="%{rpmldflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
