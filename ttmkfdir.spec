@@ -8,7 +8,6 @@ License:	GPL
 Source0:	http://www.darmstadt.gmd.de/~pommnitz/TrueType/%{name}.tar.gz
 Patch0:		%{name}-make.patch
 Patch1:		%{name}-foundrynames.patch
-Patch2:		%{name}-nospaces.patch
 BuildRequires:	freetype1-devel >= 1.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -24,7 +23,6 @@ potrzebne, aby móc korzystaæ z fontów TrueType w X Window.
 %setup -q -c %{name}
 %patch0 -p1
 %patch1 -p2
-%patch2 -p2
 
 %build
 %{__make} \
