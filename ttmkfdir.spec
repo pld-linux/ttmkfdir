@@ -20,6 +20,7 @@ Patch7:		%{name}2-nofileswithspaces.patch
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.1
 BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
 Provides:	ttmkfdir2
 Obsoletes:	ttmkfdir2
 # our freetype1 < 1.3.1-4 (formerly freetype-1.x.x) contained old ttmkfdir
