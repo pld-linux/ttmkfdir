@@ -9,7 +9,7 @@ Group(pl):	X11/Aplikacje
 License:	GPL
 Source0:	http://www.darmstadt.gmd.de/~pommnitz/TrueType/%{name}.tar.gz
 Patch0:		%{name}-make.patch
-BuildRequires:	freetype-devel
+BuildRequires:	freetype1-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_prefix	/usr/X11R6
