@@ -1,0 +1,4 @@
+- updated freetype2-port+cjk patch from rawhide (to work with gcc 3.1 or so?)
+- added man page from ttmkfdir (with changes to reflect ttmkfdir2 options)
+- added encodings patch (to fix parsing some *.enc and segfault on gbk-0.enc)
+- release 2, STBR
