@@ -1,0 +1,22 @@
+--- ttmkfdir2/encoding.l.orig	Thu May 30 18:22:58 2002
++++ ttmkfdir2/encoding.l	Thu May 30 19:11:43 2002
+@@ -63,6 +63,10 @@
+     cur_enc->size = (startptr == endptr) ? i1: (i1 - 1 << 8) + i2;
+ }
+ 
++<INSIDE_ENC_BLOCK>FIRSTINDEX{WHITESPACES}{NUMBER}{WHITESPACES}{NUMBER} {
++	/* what is it ??? */
++}
++
+ <INSIDE_ENC_BLOCK>STARTMAPPING{WHITESPACES}unicode {
+     cur_map = new NumericMapping (cur_enc->size,
+ 				  TT_PLATFORM_MICROSOFT,
+@@ -111,6 +113,8 @@
+     
+     /* now mark all the unassigned codes */
+     for (int i = i1; i <= i2; i++) {
++        if (i >= cur_enc->size)
++	    break; /* avoid SEGV on wrong UNDEFINE */
+ 	(*cur_map)[i] = -1;
+     }
+ }

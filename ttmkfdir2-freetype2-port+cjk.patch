@@ -668,7 +668,7 @@ diff -uNr ttmkfdir2.orig/ttf.h ttmkfdir2/ttf.h
 +	FT_Face             face;
 +	TT_OS2 	            *os2;
 +	TT_Postscript	    *post;
-+	string		    FileName;
++	std::string	    FileName;
      };
  };
  
