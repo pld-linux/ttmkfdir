@@ -1,19 +1,20 @@
 Summary:	Tool for creating fonts.dir for TrueType fonts
 Summary(pl):	Narzêdzie do tworzenia plików fonts.dir dla fontów TrueType
 Name:		ttmkfdir
-Version:	20001030
+Version:	2.20001030
 Release:	4
+Epoch:		1
 License:	unknown
 Group:		Applications/File
-Source0:	%{name}.tar.bz2
-Source1:	%{name}.1
-Patch0:		%{name}-libtool.patch
-Patch1:		%{name}-foundrynames.patch
-Patch2:		%{name}-gcc.patch
-Patch3:		%{name}-iso10646.patch
-Patch4:		%{name}-CJK-bugfix.patch
-Patch5:		%{name}-freetype2-port+cjk.patch
-Patch6:		%{name}-encodings.patch
+Source0:	%{name}2.tar.bz2
+Source1:	%{name}2.1
+Patch0:		%{name}2-libtool.patch
+Patch1:		%{name}2-foundrynames.patch
+Patch2:		%{name}2-gcc.patch
+Patch3:		%{name}2-iso10646.patch
+Patch4:		%{name}2-CJK-bugfix.patch
+Patch5:		%{name}2-freetype2-port+cjk.patch
+Patch6:		%{name}2-encodings.patch
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.1
 BuildRequires:	libstdc++-devel
@@ -33,7 +34,7 @@ Ten program tworzy pliki 'font.dir' dla fontów TrueType. S± one
 potrzebne, aby móc korzystaæ z fontów TrueType w X Window.
 
 %prep
-%setup -q -n %{name}
+%setup -q -n %{name}2
 %patch0 -p1
 %patch1 -p2
 %patch2 -p1
