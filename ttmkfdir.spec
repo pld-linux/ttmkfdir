@@ -2,7 +2,7 @@ Summary:	Tool for creating fonts.dir for TrueType fonts
 Summary(pl):	Narzêdzie do tworzenia plików fonts.dir dla fontów TrueType
 Name:		ttmkfdir
 Version:	none
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications/File
 Source0:	http://www.darmstadt.gmd.de/~pommnitz/TrueType/%{name}.tar.gz
@@ -37,13 +37,11 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 install ttmkfdir $RPM_BUILD_ROOT%{_bindir}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/man1
 
-gzip -9nf README
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz
+%doc README
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/*
