@@ -4,8 +4,6 @@ Name:		ttmkfdir
 Version:	none
 Release:	1
 Group:		X11/Applications
-Group(de):	X11/Applikationen
-Group(pl):	X11/Aplikacje
 License:	GPL
 Source0:	http://www.darmstadt.gmd.de/~pommnitz/TrueType/%{name}.tar.gz
 Patch0:		%{name}-make.patch
