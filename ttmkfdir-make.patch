@@ -1,0 +1,27 @@
+diff -urN ttmkfdir-none.orig/Makefile ttmkfdir-none/Makefile
+--- ttmkfdir-none.orig/Makefile	Tue Apr 25 19:34:09 2000
++++ ttmkfdir-none/Makefile	Tue Apr 25 19:35:33 2000
+@@ -1,9 +1,7 @@
+-FREETYPE_BASE=../freetype-1.1
+-FREETYPE_INCL=$(FREETYPE_BASE)/lib
+-FREETYPE_LIB=-L$(FREETYPE_BASE)/lib/.libs -lttf
++FREETYPE_LIB=-lttf
+ 
+ CC=gcc
+-CFLAGS=-Wall -pedantic -I$(FREETYPE_INCL)
++CFLAGS=-Wall -pedantic $(OPT_FLAGS)
+ LDFALGS=$(FREETYPE_LIB) -s
+ 
+ all: ttmkfdir
+diff -urN ttmkfdir-none.orig/ttmkfdir.c ttmkfdir-none/ttmkfdir.c
+--- ttmkfdir-none.orig/ttmkfdir.c	Wed Sep  9 14:50:50 1998
++++ ttmkfdir-none/ttmkfdir.c	Tue Apr 25 19:35:45 2000
+@@ -61,7 +61,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ 
+-#include <freetype.h>
++#include <freetype/freetype.h>
+ 
+ #include "panose.h"
+ #include "ttos2val.h"
