@@ -3,9 +3,10 @@ Summary(pl):	Narzêdzie do tworzenia plików fonts.dir dla fontów TrueType
 Name:		ttmkfdir
 Version:	none
 Release:	2
-Group:		Applications/File
 License:	GPL
+Group:		Applications/File
 Source0:	http://www.darmstadt.gmd.de/~pommnitz/TrueType/%{name}.tar.gz
+Source1:	ttmkfdir.1
 Patch0:		%{name}-make.patch
 Patch1:		%{name}-foundrynames.patch
 BuildRequires:	freetype1-devel >= 1.1
@@ -31,9 +32,10 @@ potrzebne, aby móc korzystaæ z fontów TrueType w X Window.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_bindir}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
 
 install ttmkfdir $RPM_BUILD_ROOT%{_bindir}
+install %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/man1
 
 gzip -9nf README
 
@@ -42,5 +44,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/*
 %doc *.gz
+%attr(755,root,root) %{_bindir}/*
+%{_mandir}/man1
