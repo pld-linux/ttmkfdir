@@ -1,0 +1,12 @@
+--- ttmkfdir2.old/encoding.l	Thu Jan 13 07:17:46 2000
++++ ttmkfdir2/encoding.l	Thu Sep 27 18:36:32 2001
+@@ -62,7 +62,7 @@
+     
+     i2 = std::strtol (startptr, &endptr, 0);
+ 
+-    cur_enc->size = (startptr == endptr) ? i1 : (i1 << 8) + i2;
++    cur_enc->size = (startptr == endptr) ? i1: (i1 - 1 << 8) + i2;
+ }
+ 
+ <INSIDE_ENC_BLOCK>STARTMAPPING{WHITESPACES}unicode {
+

@@ -1,0 +1,21 @@
+--- ttmkfdir2/ttf.h.gcc31	Mon Nov 12 17:36:45 2001
++++ ttmkfdir2/ttf.h	Mon Nov 12 17:36:58 2001
+@@ -31,7 +31,7 @@
+ 	const char         *Width (void) const;
+ 	xlfdcontainer       xlfdnames;
+     protected:
+-	const std::string   xlfd (const string &encodingname) const;
++	const std::string   xlfd (const std::string &encodingname) const;
+ 	bool                MappingPresent (int cmapidx, NumericMapping *m);
+ 	const char         *OS2Weight (void) const;
+ 	const char         *PanoseWeight (void) const;
+--- ttmkfdir2/commandline.h.gcc31	Mon Nov 12 17:37:08 2001
++++ ttmkfdir2/commandline.h	Mon Nov 12 17:37:25 2001
+@@ -6,6 +6,7 @@
+ #include <map>
+ #include <iostream>
+ #include "util.h"
++using namespace std;
+ 
+ class Commandline {
+     friend ostream &operator<< (ostream &, const Commandline &);

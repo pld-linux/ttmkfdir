@@ -1,0 +1,12 @@
+--- freetype-2.0.5/ttmkfdir2/ttf.cpp.sopwith	Tue Nov 27 21:59:55 2001
++++ freetype-2.0.5/ttmkfdir2/ttf.cpp	Tue Nov 27 22:03:00 2001
+@@ -127,6 +127,9 @@
+ 	}
+     }
+ 
++    /* All truetype fonts are Unicode */
++    xlfdnames.push_back (xlfd (std::string("iso10646-1")));
++
+     /*
+      * remove duplicates.
+      */

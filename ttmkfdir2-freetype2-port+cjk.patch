@@ -1,0 +1,709 @@
+diff -uNr ttmkfdir2.orig/Makefile ttmkfdir2/Makefile
+--- ttmkfdir2.orig/Makefile	Fri Mar 29 05:17:34 2002
++++ ttmkfdir2/Makefile	Fri Mar 29 05:18:27 2002
+@@ -1,6 +1,6 @@
+-FREETYPE_BASE=/usr/include/freetype
++FREETYPE_BASE=/usr/include/freetype2
+ FREETYPE_INCL=-I$(FREETYPE_BASE)/.
+-FREETYPE_LIB=/usr/lib/libttf.la
++FREETYPE_LIB=/usr/lib/libfreetype.so
+ 
+ DEBUG=-ggdb
+ CXX=g++
+diff -uNr ttmkfdir2.orig/builtin.cpp ttmkfdir2/builtin.cpp
+--- ttmkfdir2.orig/builtin.cpp	Fri Jan 14 22:22:12 2000
++++ ttmkfdir2/builtin.cpp	Fri Mar 29 05:18:27 2002
+@@ -1,4 +1,5 @@
+ #include "encoding.h"
++#include "ttf.h"
+ 
+ #define NOCODE -1
+ 
+@@ -566,21 +567,21 @@
+ };
+ 
+ Encoding::BuiltinEncoding_t Encoding::builtin_encodings[] = {
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_1},{"iso8859-1",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_2},{"iso8859-2",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_3},{"iso8859-3",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_4},{"iso8859-4",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_5},{"iso8859-5",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_6},{"iso8859-6",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_7},{"iso8859-7",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_8},{"iso8859-8",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_9},{"iso8859-9",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_10},{"iso8859-10",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_15},{"iso8859-15","fcd8859-15",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8r},{"koi8-r",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8ru},{"koi8-ru",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8r1},{"koi8-r",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8ru1},{"koi8-ru",}},
+-    {256,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,A_Z_letters},{"ascii-0",}},
++    {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_1},{"iso8859-1",}},
++    {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_2},{"iso8859-2",}},
++    {256,184,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_3},{"iso8859-3",}},
++    {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_4},{"iso8859-4",}},
++    {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_5},{"iso8859-5",}},
++    {256,146,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_6},{"iso8859-6",}},
++    {256,185,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_7},{"iso8859-7",}},
++    {256,153,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_8},{"iso8859-8",}},
++    {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_9},{"iso8859-9",}},
++    {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_10},{"iso8859-10",}},
++    {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_15},{"iso8859-15","fcd8859-15",}},
++    {256,223,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8r},{"koi8-r",}},
++    {256,223,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8ru},{"koi8-ru",}},
++    {256,175,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8r1},{"koi8-r",}},
++    {256,185,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,koi8ru1},{"koi8-ru",}},
++    {256,27,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,A_Z_letters},{"ascii-0",}},
+     {0,}
+ };
+diff -uNr ttmkfdir2.orig/encoding.cpp ttmkfdir2/encoding.cpp
+--- ttmkfdir2.orig/encoding.cpp	Fri Jan 14 22:46:46 2000
++++ ttmkfdir2/encoding.cpp	Fri Mar 29 05:18:27 2002
+@@ -2,7 +2,7 @@
+ #include <cstdio>
+ #include <cstdlib>
+ #include <cstring>
+-#include <freetype.h>
++#include "freetype/freetype.h"
+ 
+ #include "ttmkfdir.h"
+ #include "encoding.h"
+@@ -90,7 +90,7 @@
+ }
+ 
+ Encoding::Encoding (Encodings_t *dest, BuiltinEncoding_t *b):
+-    size (b->size)
++    size (b->size), enc_size (b->enc_size), start_code (b->start_code)
+ {
+     for (int i = 0; b->aliases[i]; i++)
+ 	names.push_back (b->aliases[i]);
+diff -uNr ttmkfdir2.orig/encoding.h ttmkfdir2/encoding.h
+--- ttmkfdir2.orig/encoding.h	Fri Jan 14 22:24:34 2000
++++ ttmkfdir2/encoding.h	Fri Mar 29 05:18:27 2002
+@@ -6,14 +6,14 @@
+ #include <map>
+ #include <string>
+ 
+-#include <freetype.h>
++#include "freetype/freetype.h"
+ 
+ #include "util.h"
+ 
+ class NumericMapping : public std::vector<int> {
+ public:
+     typedef unsigned long int Key_t;
+-    NumericMapping (size_type n, TT_UShort p, TT_UShort enc):
++    NumericMapping (size_type n, FT_UShort p, FT_UShort enc):
+ 	std::vector<int>(n),
+ 	platform (p),
+ 	encoding (enc)
+@@ -22,7 +22,7 @@
+ 	for (size_type i = 0x20; i < n;    i++) (*this)[i] = i;
+     }
+ 
+-    static inline Key_t cmapkey (TT_UShort p, TT_UShort e) {
++    static inline Key_t cmapkey (FT_UShort p, FT_UShort e) {
+ 	return (p << 16) | e;
+     }
+ 
+@@ -31,8 +31,8 @@
+     }
+     
+     ~NumericMapping (void) {};
+-    TT_UShort     platform;
+-    TT_UShort     encoding;
++    FT_UShort     platform;
++    FT_UShort     encoding;
+ };
+ 
+ class Encoding;
+@@ -55,9 +55,11 @@
+     typedef std::map<NumericMapping::Key_t, NumericMapping *> MappingMap_t;
+     typedef struct {
+ 	unsigned int size;
++        unsigned int enc_size;
++        unsigned int start_code;
+ 	struct {
+-	    TT_UShort     platform;
+-	    TT_UShort     encoding;
++	    FT_UShort     platform;
++	    FT_UShort     encoding;
+ 	    int *mappingtable;
+ 	} mapdata;
+ 	const char *aliases[5];
+@@ -66,6 +68,8 @@
+     std::vector<std::string> names;
+     MappingMap_t             mappings;
+     unsigned int             size;
++    unsigned int             enc_size;
++    unsigned int             start_code;
+     static BuiltinEncoding_t builtin_encodings[];
+ };
+ 
+diff -uNr ttmkfdir2.orig/encoding.l ttmkfdir2/encoding.l
+--- ttmkfdir2.orig/encoding.l	Fri Mar 29 05:17:34 2002
++++ ttmkfdir2/encoding.l	Fri Mar 29 05:18:27 2002
+@@ -4,16 +4,14 @@
+ #include <cstring>
+ #include <cstdio>
+ 
+-#include <freetype.h>
++#include "ttf.h"
+ #include "ttmkfdir.h"    
+ #include "encoding.h"    
+ 
+ #define DEFAULT_SIZE 0x100 /* 8 bit encoding */
+ #define YY_DECL int yylex (char *current_file, Encodings_t &dest)
+ 
+-
+ static unsigned int line_number = 1;
+-    
+ static inline char *
+ strip_first (char *s)
+ {
+@@ -70,6 +68,8 @@
+ 				  TT_PLATFORM_MICROSOFT,
+ 				  TT_MS_ID_UNICODE_CS);
+     
++    cur_enc->enc_size = 0;
++    cur_enc->start_code = 0xffff;
+     BEGIN(INSIDE_MAP_BLOCK);
+ }
+ 
+@@ -79,7 +79,8 @@
+ 
+ <INSIDE_ENC_BLOCK>STARTMAPPING{WHITESPACES}CMAP{WHITESPACES}{NUMBER}{WHITESPACES}{NUMBER} {
+ 
+-    char *startptr = strip_first (strip_first (yytext));
++    BEGIN(INSIDE_UNKNOWN_MAP);
++    /*char *startptr = strip_first (strip_first (yytext));
+     char *endptr;
+     
+     TT_UShort cmap_plat = strtol (startptr, &endptr, 0);
+@@ -87,7 +88,7 @@
+     TT_UShort cmap_enc = strtol (startptr, &endptr, 0);
+     
+     cur_map = new NumericMapping (cur_enc->size, cmap_plat, cmap_enc);
+-    BEGIN(INSIDE_MAP_BLOCK);
++    BEGIN(INSIDE_MAP_BLOCK); */
+ }
+ 
+ <INSIDE_MAP_BLOCK>UNDEFINE{WHITESPACES}{NUMBER}({WHITESPACES}{NUMBER})? {
+@@ -139,6 +140,9 @@
+     for (i = start_range; i <= end_range; i++, target++) {
+ 	(*cur_map)[i] = target;
+     }
++    cur_enc->enc_size = cur_enc->enc_size + end_range - start_range + 1;   
++    if (start_range < cur_enc->start_code) 
++	cur_enc->start_code = start_range;
+ }
+ 
+ 
+diff -uNr ttmkfdir2.orig/ttf.cpp ttmkfdir2/ttf.cpp
+--- ttmkfdir2.orig/ttf.cpp	Fri Mar 29 05:17:34 2002
++++ ttmkfdir2/ttf.cpp	Fri Mar 29 05:18:27 2002
+@@ -1,7 +1,9 @@
++#include <iostream>
+ #include <algorithm>
+ #include <cctype>
+ #include <cstring>
+ 
++#include "freetype/tttables.h"
+ #include "ttmkfdir.h"
+ #include "ttf.h"
+ #include "ttos2val.h"
+@@ -12,7 +14,7 @@
+ 
+ namespace {
+     inline bool
+-    isMacEnglish (TT_UShort  platform, TT_UShort  encoding, TT_UShort  language)
++    isMacEnglish (FT_UShort  platform, FT_UShort  encoding, FT_UShort  language)
+     {
+ 	return ((platform == TT_PLATFORM_MACINTOSH) &&
+ 		(encoding == TT_MAC_ID_ROMAN) &&
+@@ -20,7 +22,7 @@
+     }
+ 
+     bool
+-    isUnicodeEnglish (TT_UShort  platform, TT_UShort  encoding, TT_UShort  language)
++    isUnicodeEnglish (FT_UShort  platform, FT_UShort  encoding, FT_UShort  language)
+     {
+ 	if ((platform == TT_PLATFORM_MICROSOFT) &&
+ 	    ((encoding == TT_MS_ID_UNICODE_CS) || (encoding == TT_MS_ID_SYMBOL_CS))) {
+@@ -47,57 +49,80 @@
+ }
+ 
+ bool
+-Face::MappingPresent (int cmapidx, NumericMapping *m)
++Face::MappingPresent (int cmapidx, NumericMapping *m, int enc_size, int start_code, bool enc_comp)
+ {
+-    TT_CharMap cmap;
+     int idx, missing = 0;
++    FT_Set_Charmap (face, face->charmaps[cmapidx]);
+ 
+-    TT_Get_CharMap (face, cmapidx, &cmap);
+-
+-    for (unsigned int i = 0; i < m->size (); i++) {
++    for (unsigned int i = start_code; i < m->size (); i++) {
+ 	if ((*m)[i] < 0) 
+ 	    continue;
+-
+-	if ((idx = TT_Char_Index (cmap, (*m)[i])) == 0) {
++	if ((idx = FT_Get_Char_Index (face, (*m)[i])) == 0)
+ 	    missing++;
+-	}
+     }
+-
+-    return (missing <= int (cmdline::instance()->option ("max-missing")));
++    if (enc_size <= 256) {
++        return (missing <= int (cmdline::instance()->option ("max-missing")));
++    } else {
++        return ((100 * missing/enc_size) <= int (cmdline::instance()->option ("max-missing-percentage")) & enc_comp);
++    }
+ }
+ 
+ Face::Face (const std::string &filename)
+ {
+-    TT_Error fterror;
++    FT_Error fterror;
++    string header_enc("-");
+ 
+-    /* open the TTF file */
+-    fterror = TT_Open_Face (*engine::instance(), filename.c_str (), &face);
++    string::size_type pos = filename.rfind("/");
++    if ( pos == string::npos ) FileName = filename;
++        else FileName = filename.substr( pos + 1);
+ 
+-    if (fterror != TT_Err_Ok) {
++    if ((fterror = FT_Init_FreeType(&library)) != FT_Err_Ok){
+ 	throw fterror;
+     }
+ 
+-    /* ask FreeType for the font properties */
+-    fterror = TT_Get_Face_Properties (face, &properties);
+-
+-    if (fterror != TT_Err_Ok) {
++    if ((fterror = FT_New_Face(library, filename.c_str(), 0, &face)) != FT_Err_Ok) {
+ 	throw fterror;
+     }
+ 
++    if ((post = (TT_Postscript *) FT_Get_Sfnt_Table(face, ft_sfnt_post)) == 0){
++	throw FT_Err_Post_Table_Missing;
++    }
++
++    if ((os2 = (TT_OS2 *) FT_Get_Sfnt_Table(face, ft_sfnt_os2)) == 0) {
++	throw FT_Err_Table_Missing;
++    }
++
++    for (int j = 0; j < 32; j++) {
++	switch (os2->ulCodePageRange1 & (1 << j)) {
++	    case TT_CODEPAGE_RANGE_932: /* Japanese */
++                header_enc = "ji";
++	        break;
++	    case TT_CODEPAGE_RANGE_936: /* Simplified Chinese */
++                header_enc = "gb";
++	        break;
++	    case TT_CODEPAGE_RANGE_949: /* Korean Wansung */
++                header_enc = "ks";
++	        break;
++	    case TT_CODEPAGE_RANGE_950: /* Traditional Chinese */
++                header_enc = "big";
++	        break;
++        }
++    }
+     /*
+      * Iterate over all cmap entries.
+      */
+-    for (int cmapidx = 0; cmapidx < properties.num_CharMaps; cmapidx++) {
+-	TT_UShort platform;
+-	TT_UShort encoding;
++    for (int cmapidx = 0; cmapidx < face->num_charmaps; cmapidx++) {
++	FT_UShort platform;
++	FT_UShort encoding;
+ 
+ 	/*
+ 	 * get the id of the cmap entry.
+ 	 */
+-	TT_Get_CharMap_ID (face, cmapidx, &platform, &encoding);
++	platform = face->charmaps[cmapidx]->platform_id;
++	encoding = face->charmaps[cmapidx]->encoding_id;
+ 
+ 	if ((platform == TT_PLATFORM_MICROSOFT) && (encoding == TT_MS_ID_SYMBOL_CS)) {
+-	    xlfdnames.push_back (xlfd (std::string ("microsoft-symbol")));
++	    add_entries (std::string ("microsoft-symbol"));
+ 	    continue;
+ 	}
+ 
+@@ -105,7 +130,6 @@
+ 	 * make a search key from the cmap id.
+ 	 */
+ 	NumericMapping::Key_t key = NumericMapping::cmapkey (platform, encoding);
+-
+ 	/*
+ 	 * find all the encodings that are based on this cmap.
+ 	 */
+@@ -116,19 +140,25 @@
+ 	 * then look whether each of these encodings is present in this cmap.
+ 	 */
+ 	for (Encodings_t::const_iterator i = bounds.first; i != bounds.second; i++) {
+-	    if (MappingPresent (cmapidx, i->second->mappings[key])) {
++	    if (MappingPresent (cmapidx, 
++			        i->second->mappings[key], 
++				i->second->enc_size,
++			       	i->second->start_code, 
++				(header_enc.compare("-")?((i->second->names[0].find(header_enc) != string::npos)?1:0):1)
++		    	        )) {
+ 		/*
+ 		 * if the mapping is present, add all xlfd names for this mapping to the
+ 		 * list of available font names.
+ 		 */
+-		for (unsigned int k = 0; k < i->second->names.size (); k++)
+-		    xlfdnames.push_back (xlfd (i->second->names[k]));
++		for (unsigned int k = 0; k < i->second->names.size (); k++) {
++	            add_entries (i->second->names[k]);
++		}
+ 	    }
+ 	}
+     }
+ 
+     /* All truetype fonts are Unicode */
+-    xlfdnames.push_back (xlfd (std::string("iso10646-1")));
++    add_entries (std::string("iso10646-1"));
+ 
+     /*
+      * remove duplicates.
+@@ -137,21 +167,17 @@
+     xlfdnames.erase (std::unique (xlfdnames.begin (), xlfdnames.end ()), xlfdnames.end ());
+ 
+     if (cmdline::instance()->option ("debug-entries"))
+-	xlfdnames.push_back (xlfd (std::string("truetype-raw")));
++	add_entries (std::string("truetype-raw"));
+ }
+ 
+ 
+ const char *
+-Face::ExtractName (int idx, bool unicode) const
++Face::ExtractName (FT_UInt name_len, FT_Byte* name, bool unicode) const
+ {
+-    char*        name;
+-    TT_UShort    name_len;
+     int          name_pos = 0;
+-    int          i;
++    FT_UInt      i;
+     int          increment;
+     
+-    TT_Get_Name_String (face, idx, &name, &name_len);
+-    
+     if (unicode) {
+ 	name_len =  name_len < 512 ? name_len : 512;
+ 	increment = 2;
+@@ -180,24 +206,35 @@
+     int i, n;
+     const char *result = 0;
+ 
+-    TT_UShort  platform;
+-    TT_UShort  encoding;
+-    TT_UShort  language;
+-    TT_UShort  NameId;
++    FT_Error   fterror;
++    FT_UShort  platform;
++    FT_UShort  encoding;
++    FT_UShort  language;
++    FT_UShort  NameId;
++    FT_UInt    NameLen;
++    FT_SfntName NamePtr;
+ 
+ 
+     /* get the number of name strings in this font */
+-    if ((n = TT_Get_Name_Count (face)) > 0) {
++    if ((n = FT_Get_Sfnt_Name_Count (face)) > 0) {
+ 
+ 	/* now look at every entry */
+ 	for (i = 0; i < n; i++) {
+-	    TT_Get_Name_ID (face, i, &platform, &encoding, &language, &NameId);
++	    if ((fterror = FT_Get_Sfnt_Name (face, i, &NamePtr)) != FT_Err_Ok) {
++                    std::cout << "Error code :0x" << hex << fterror << std::endl;
++		    throw(fterror);
++            };
++            platform = NamePtr.platform_id;
++            encoding = NamePtr.encoding_id;
++            language = NamePtr.language_id;
++            NameId = NamePtr.name_id;
++            NameLen = NamePtr.string_len;
+ 
+ 	    if ((NameId == TT_NAME_ID_FONT_FAMILY) || (NameId == TT_NAME_ID_PS_NAME)) {
+ 		if (isMacEnglish (platform, encoding, language)) {
+-		    result = ExtractName (i, false);
++		    result = ExtractName (NameLen, NamePtr.string, false);
+ 		} else if (isUnicodeEnglish (platform, encoding, language)) {
+-		    result = ExtractName (i, true);
++		    result = ExtractName (NameLen, NamePtr.string, true);
+ 		}
+ 
+ 		if (result)
+@@ -205,7 +242,6 @@
+ 	    }
+ 	}
+     }
+-
+     return "unknown";
+ }
+ 
+@@ -408,10 +444,10 @@
+ 	{ {0,},   0}
+     };
+ 
+-    code[0] = toupper(properties.os2->achVendID[0]);
+-    code[1] = toupper(properties.os2->achVendID[1]);
+-    code[2] = toupper(properties.os2->achVendID[2]);
+-    code[3] = toupper(properties.os2->achVendID[3]);
++    code[0] = toupper(os2->achVendID[0]);
++    code[1] = toupper(os2->achVendID[1]);
++    code[2] = toupper(os2->achVendID[2]);
++    code[3] = toupper(os2->achVendID[3]);
+     code[4] = 0;
+ 
+     if (code[0] == 0) { 
+@@ -445,13 +481,13 @@
+ 	"extra black",
+     };
+ 
+-    switch (properties.os2->panose[TT_PANOSE_FAMILY_TYPE]) {
++    switch (os2->panose[TT_PANOSE_FAMILY_TYPE]) {
+     case TT_PANOSE_FAMILY_LATIN_TEXT:
+     case TT_PANOSE_FAMILY_LATIN_HAND:
+     case TT_PANOSE_FAMILY_LATIN_DECORATIVE:
+-	if (!((properties.os2->panose[TT_PANOSE_WEIGHT] < TT_PANOSE_LT_WEIGHT_VERY_LIGHT) ||
+-	      (properties.os2->panose[TT_PANOSE_WEIGHT] > TT_PANOSE_LT_WEIGHT_EXTRA_BLACK))) {
+-	    return panose_weight_latin[properties.os2->panose[TT_PANOSE_WEIGHT]];
++	if (!((os2->panose[TT_PANOSE_WEIGHT] < TT_PANOSE_LT_WEIGHT_VERY_LIGHT) ||
++	      (os2->panose[TT_PANOSE_WEIGHT] > TT_PANOSE_LT_WEIGHT_EXTRA_BLACK))) {
++	    return panose_weight_latin[os2->panose[TT_PANOSE_WEIGHT]];
+ 	}
+ 	break;
+     }
+@@ -462,7 +498,7 @@
+ const char *
+ Face::OS2Weight (void) const
+ {
+-    switch (properties.os2->usWeightClass) {
++    switch (os2->usWeightClass) {
+     case TT_FW_THIN: return "thin";
+     case TT_FW_EXTRALIGHT: return "extra light";
+     case TT_FW_LIGHT: return "light";
+@@ -489,7 +525,7 @@
+     }
+ 
+     /* last fall back */
+-    return properties.os2->fsSelection & (1 << 5) ? "bold" : "medium";
++    return os2->fsSelection & (1 << 5) ? "bold" : "medium";
+ }
+ 
+ const char *
+@@ -521,18 +557,18 @@
+ 	"monospaced",
+     };
+ 
+-    switch (properties.os2->panose[TT_PANOSE_FAMILY_TYPE]) {
++    switch (os2->panose[TT_PANOSE_FAMILY_TYPE]) {
+     case TT_PANOSE_FAMILY_LATIN_TEXT:
+-	if (!((properties.os2->panose[TT_PANOSE_PROPORTION] < TT_PANOSE_LT_PROPORTION_OLD_STYLE) ||
+-	      (properties.os2->panose[TT_PANOSE_PROPORTION] > TT_PANOSE_LT_PROPORTION_MONOSPACED))) {
+-	    return panose_spacing_latin_text[properties.os2->panose[TT_PANOSE_PROPORTION]];
++	if (!((os2->panose[TT_PANOSE_PROPORTION] < TT_PANOSE_LT_PROPORTION_OLD_STYLE) ||
++	      (os2->panose[TT_PANOSE_PROPORTION] > TT_PANOSE_LT_PROPORTION_MONOSPACED))) {
++	    return panose_spacing_latin_text[os2->panose[TT_PANOSE_PROPORTION]];
+ 	}
+ 	break;
+ 	
+     case TT_PANOSE_FAMILY_LATIN_DECORATIVE:
+-	if (!((properties.os2->panose[TT_PANOSE_ASPECT] < TT_PANOSE_LD_SUPER_CONDENSED) ||
+-	      (properties.os2->panose[TT_PANOSE_ASPECT] > TT_PANOSE_LD_MONOSPACED))) {
+-	    return panose_spacing_latin_decorative[properties.os2->panose[TT_PANOSE_ASPECT]];
++	if (!((os2->panose[TT_PANOSE_ASPECT] < TT_PANOSE_LD_SUPER_CONDENSED) ||
++	      (os2->panose[TT_PANOSE_ASPECT] > TT_PANOSE_LD_MONOSPACED))) {
++	    return panose_spacing_latin_decorative[os2->panose[TT_PANOSE_ASPECT]];
+ 	}
+ 	break;
+     }
+@@ -543,7 +579,7 @@
+ const char *
+ Face::OS2Width (void) const
+ {
+-    switch (properties.os2->usWidthClass) {
++    switch (os2->usWidthClass) {
+     case TT_FWIDTH_ULTRA_CONDENSED: return "ultra condensed";
+     case TT_FWIDTH_EXTRA_CONDENSED: return "extra condensed";
+     case TT_FWIDTH_CONDENSED: return "condensed";
+@@ -575,7 +611,20 @@
+ 
+ Face::~Face (void)
+ {
+-    TT_Close_Face (face);
++    FT_Done_Face (face);
++    FT_Done_Library (library);
++}
++
++void Face::add_entries (const string &encodingname)
++{
++    xlfdnames.push_back (xlfd(encodingname));
++    if ((int (cmdline::instance()->option ("additional-entries"))) == 1) {
++        xlfdnames.push_back (xlfd_cjk (encodingname,"ai=0.3:","medium","i"));
++        xlfdnames.push_back (xlfd_cjk (encodingname,"ds=y:","bold","r"));
++        xlfdnames.push_back (xlfd_cjk (encodingname,"ds=y:ai=0.3:","bold","i"));
++    } else if ((int (cmdline::instance()->option ("additional-entries"))) == 2) {
++        xlfdnames.push_back (xlfd_cjk (encodingname,"","bold","r"));
++    } 
+ }
+ 
+ const std::string
+@@ -583,18 +632,49 @@
+ {
+     std::string xlfdname;
+     
+-    xlfdname = '-';
++    xlfdname = FileName;
++    xlfdname += ' ';
++    xlfdname += '-';
+     xlfdname += FoundryName ();
+     xlfdname += '-';
+     xlfdname += FontFamilyName ();
+     xlfdname += '-';
+     xlfdname += Weight ();
+     xlfdname += '-';
+-    xlfdname += (properties.os2->fsSelection & TT_SELECTION_ITALIC) ? 'i' : 'r';
++    xlfdname += (os2->fsSelection & TT_SELECTION_ITALIC) ? 'i' : 'r';
++    xlfdname += '-';
++    xlfdname += Width ();
++    xlfdname += "--0-0-0-0-";
++    xlfdname += ((post->isFixedPitch) ? 'm' : ((face->num_glyphs > 2000) ? 'c' : 'p'));
++    xlfdname += "-0-";
++    xlfdname += encodingname;
++    
++    return xlfdname;
++}
++
++const std::string
++Face::xlfd_cjk (const string &encodingname,
++		const string &p1,
++		const string &p2,
++		const string &p3) const
++{
++    std::string xlfdname;
++    
++    xlfdname = p1;
++    xlfdname += FileName;
++    xlfdname += ' ';
++    xlfdname += '-';
++    xlfdname += FoundryName ();
++    xlfdname += '-';
++    xlfdname += FontFamilyName ();
++    xlfdname += '-';
++    xlfdname += p2;
++    xlfdname += '-';
++    xlfdname += p3;
+     xlfdname += '-';
+     xlfdname += Width ();
+     xlfdname += "--0-0-0-0-";
+-    xlfdname += (properties.postscript->isFixedPitch) ? 'm' : 'p';
++    xlfdname += ((post->isFixedPitch) ? 'm' : ((face->num_glyphs > 2000) ? 'c' : 'p'));
+     xlfdname += "-0-";
+     xlfdname += encodingname;
+     
+diff -uNr ttmkfdir2.orig/ttf.h ttmkfdir2/ttf.h
+--- ttmkfdir2.orig/ttf.h	Fri Mar 29 05:17:34 2002
++++ ttmkfdir2/ttf.h	Fri Mar 29 05:18:27 2002
+@@ -3,22 +3,17 @@
+ #define TTF_H__
+ 
+ #include <string>
+-#include <freetype.h>
++#include "freetype/freetype.h"
++#include "freetype/tttables.h"
++#include "freetype/ftsnames.h"
++#include "freetype/ttnameid.h"
++#include "freetype/fterrors.h"
++#include "freetype/ftmodule.h"
+ 
+ #include "util.h"
+ #include "encoding.h"
+ 
+ namespace ttf {
+-    class Engine {
+-    public:
+-	Engine (void) { TT_Init_FreeType (&engine);}
+-	~Engine (void) {TT_Done_FreeType (engine);}
+-	operator TT_Engine (void) {return engine;}
+-    protected:
+-	TT_Engine engine;
+-    };
+-
+-    typedef util::Singleton<Engine> engine;
+ 
+     class Face {
+     public:
+@@ -31,16 +26,24 @@
+ 	const char         *Width (void) const;
+ 	xlfdcontainer       xlfdnames;
+     protected:
++	void                add_entries (const std::string &encodingname) ;
+ 	const std::string   xlfd (const std::string &encodingname) const;
+-	bool                MappingPresent (int cmapidx, NumericMapping *m);
++	const std::string   xlfd_cjk (const std::string &encodingname,
++			              const std::string &p1,
++			              const std::string &p2,
++			              const std::string &p3) const;
++	bool                MappingPresent (int cmapidx, NumericMapping *m, int enc_size, int start_code, bool enc_comp);
+ 	const char         *OS2Weight (void) const;
+ 	const char         *PanoseWeight (void) const;
+-	const char         *ExtractName (int idx, bool unicode) const;
++	const char         *ExtractName (FT_UInt name_len, FT_Byte* name, bool unicode) const;
+ 	const char         *OS2Width (void) const;
+ 	const char         *PanoseWidth (void) const;
+ 	mutable char        name_buffer[257];
+-	TT_Face             face;
+-	TT_Face_Properties  properties;
++	FT_Library	    library;
++	FT_Face             face;
++	TT_OS2 	            *os2;
++	TT_Postscript	    *post;
++	string		    FileName;
+     };
+ };
+ 
+diff -uNr ttmkfdir2.orig/ttmkfdir.cpp ttmkfdir2/ttmkfdir.cpp
+--- ttmkfdir2.orig/ttmkfdir.cpp	Fri Jan 14 23:26:53 2000
++++ ttmkfdir2/ttmkfdir.cpp	Fri Mar 29 05:18:27 2002
+@@ -1,3 +1,4 @@
++// Last updated on March 14, 2002 by Yu Shao <yshao@redhat.com>
+ #include <iostream>
+ #include <fstream>
+ #include <algorithm>
+@@ -20,6 +21,8 @@
+     cerr << "-d, --font-dir\t\tname of the TrueType font directory, default is \".\"" << endl;
+     cerr << "-f, --default-foundry\tname of the default font foundry, default is \"misc\"" << endl;
+     cerr << "-m, --max-missing\tmax # of missing characters per encoding, default is 5" << endl;
++    cerr << "-a, --max-missing-percentage \tmax percentage # of missing characters per encoding, default is 2" << endl;
++    cerr << "-x, --additional-entries \tgenerate additional TTCaps(1), or FreeType(2), default is 0" << endl;
+     cerr << "-c, --completeness\tuse less strict completeness tests for encoding tables" << endl;
+     cerr << "-p, --panose\t\tuse panose information" << endl;
+     cerr << "-h, --help\t\tshow this help message" << endl;
+@@ -33,6 +36,8 @@
+     cmdline::instance()->AddOption (new Commandline::Option ("font-dir", 'd', "."));
+     cmdline::instance()->AddOption (new Commandline::Option ("default-foundry", 'f', "misc"));
+     cmdline::instance()->AddOption (new Commandline::Option ("max-missing", 'm', "5"));
++    cmdline::instance()->AddOption (new Commandline::Option ("max-missing-percentage", 'a', "2"));
++    cmdline::instance()->AddOption (new Commandline::Option ("additional-entries", 'x', "0"));
+     cmdline::instance()->AddOption (new Commandline::Option ("completeness", 'c'));
+     cmdline::instance()->AddOption (new Commandline::Option ("debug-entries", 'g'));
+     cmdline::instance()->AddOption (new Commandline::Option ("help", 'h'));
+@@ -58,7 +63,7 @@
+     for (directory::iterator i = dir::instance()->begin (); i != dir::instance()->end(); i++) {
+ 	const ttf::Face face (dir::instance()->path() + '/' + *i);
+ 	for (ttf::Face::xlfdcontainer::const_iterator j = face.xlfdnames.begin (); j != face.xlfdnames.end (); j++)
+-	    fontdir.push_back (*i + " " + *j);
++	    fontdir.push_back (*j);
+     }
+ 
+     string filename = cmdline::instance()->option ("output");
