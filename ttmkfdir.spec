@@ -28,7 +28,7 @@ móc korzystaæ z fontów TrueType w X Window.
 %build
 LDFLAGS="-s" ; export LDFLAGS
 
-make OPT_FLAGS="$RPM_OPT_FLAGS"
+%{__make} OPT_FLAGS="$RPM_OPT_FLAGS"
 
 %install
 rm -rf $RPM_BUILD_ROOT
