@@ -1,0 +1,109 @@
+diff -Nur ttmkfdir2.orig/builtin.cpp ttmkfdir2.chng/builtin.cpp
+--- ttmkfdir2.orig/builtin.cpp	2002-11-07 06:28:44.000000000 +0100
++++ ttmkfdir2.chng/builtin.cpp	2005-06-26 00:42:33.000000000 +0200
+@@ -564,7 +564,7 @@
+ 	0x00f8, 0x00f9, 0x00fa, 0x00fb, 0x00fc, 0x00fd, 0x00fe, 0x00ff
+     };
+ 
+-};
++}
+ 
+ Encoding::BuiltinEncoding_t Encoding::builtin_encodings[] = {
+     {256,191,32,{TT_PLATFORM_MICROSOFT,TT_MS_ID_UNICODE_CS,iso8859_1},{"iso8859-1",}},
+diff -Nur ttmkfdir2.orig/encoding.cpp ttmkfdir2.chng/encoding.cpp
+--- ttmkfdir2.orig/encoding.cpp	2002-11-07 06:28:44.000000000 +0100
++++ ttmkfdir2.chng/encoding.cpp	2005-06-26 00:41:14.000000000 +0200
+@@ -2,7 +2,9 @@
+ #include <cstdio>
+ #include <cstdlib>
+ #include <cstring>
+-#include "freetype/freetype.h"
++
++#include <ft2build.h>
++#include FT_FREETYPE_H
+ 
+ #include "ttmkfdir.h"
+ #include "encoding.h"
+diff -Nur ttmkfdir2.orig/encoding.h ttmkfdir2.chng/encoding.h
+--- ttmkfdir2.orig/encoding.h	2002-11-07 06:28:44.000000000 +0100
++++ ttmkfdir2.chng/encoding.h	2005-06-26 00:40:59.000000000 +0200
+@@ -6,7 +6,8 @@
+ #include <map>
+ #include <string>
+ 
+-#include "freetype/freetype.h"
++#include <ft2build.h>
++#include FT_FREETYPE_H
+ 
+ #include "util.h"
+ 
+diff -Nur ttmkfdir2.orig/ttf.cpp ttmkfdir2.chng/ttf.cpp
+--- ttmkfdir2.orig/ttf.cpp	2005-06-26 00:12:18.000000000 +0200
++++ ttmkfdir2.chng/ttf.cpp	2005-06-26 00:38:32.000000000 +0200
+@@ -229,7 +229,7 @@
+ 	for (i = 0; i < n; i++) {
+ 	    if ((fterror = FT_Get_Sfnt_Name (face, i, &NamePtr)) != FT_Err_Ok) {
+                     std::cout << "Warning: Can't SFNT name : " << FileName << "(" << fterror << ")" << std::endl;
+-	            return;
++	            return result;
+             };
+             platform = NamePtr.platform_id;
+             encoding = NamePtr.encoding_id;
+diff -Nur ttmkfdir2.orig/ttf.h ttmkfdir2.chng/ttf.h
+--- ttmkfdir2.orig/ttf.h	2002-11-07 06:28:44.000000000 +0100
++++ ttmkfdir2.chng/ttf.h	2005-06-26 00:39:14.000000000 +0200
+@@ -3,12 +3,13 @@
+ #define TTF_H__
+ 
+ #include <string>
+-#include "freetype/freetype.h"
+-#include "freetype/tttables.h"
+-#include "freetype/ftsnames.h"
+-#include "freetype/ttnameid.h"
+-#include "freetype/fterrors.h"
+-#include "freetype/ftmodule.h"
++#include <ft2build.h>
++#include FT_FREETYPE_H
++#include FT_TRUETYPE_TABLES_H
++#include FT_SFNT_NAMES_H
++#include FT_TRUETYPE_IDS_H
++#include FT_ERRORS_H
++#include FT_MODULE_H
+ 
+ #include "util.h"
+ #include "encoding.h"
+@@ -45,7 +46,7 @@
+ 	TT_Postscript	    *post;
+ 	std::string	    FileName;
+     };
+-};
++}
+ 
+ #endif /* TTF_H__ */
+ 
+diff -Nur ttmkfdir2.orig/util.h ttmkfdir2.chng/util.h
+--- ttmkfdir2.orig/util.h	2000-04-16 10:00:40.000000000 +0200
++++ ttmkfdir2.chng/util.h	2005-06-26 00:07:54.000000000 +0200
+@@ -3,7 +3,8 @@
+ #define TTMKFDIRUTIL_H__
+ 
+ namespace util {
+-    template <class TYPE, class PRESENTED = TYPE> class Singleton {
++    template <class TYPE, class PRESENTED = TYPE> 
++    class Singleton {
+     public:
+ 	static PRESENTED *instance (void) {
+ 	    static TYPE *val = 0;
+@@ -14,9 +15,9 @@
+ 	    return val;
+ 	}
+     protected:
+-	Singleton (void) {};
+-	~Singleton (void) {};
++	Singleton (void) {}
++	~Singleton (void) {}
+     };
+-}; 
++}
+ 
+ #endif // TTMKFDIRUTIL_H__
