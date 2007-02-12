@@ -1,5 +1,5 @@
 Summary:	Tool for creating fonts.dir for TrueType fonts
-Summary(pl.UTF-8):   Narzędzie do tworzenia plików fonts.dir dla fontów TrueType
+Summary(pl.UTF-8):	Narzędzie do tworzenia plików fonts.dir dla fontów TrueType
 Name:		ttmkfdir
 Version:	2.20021109
 Release:	1
