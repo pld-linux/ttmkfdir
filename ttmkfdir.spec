@@ -1,5 +1,5 @@
 Summary:	Tool for creating fonts.dir for TrueType fonts
-Summary(pl):	Narzêdzie do tworzenia plików fonts.dir dla fontów TrueType
+Summary(pl.UTF-8):   NarzÄ™dzie do tworzenia plikÃ³w fonts.dir dla fontÃ³w TrueType
 Name:		ttmkfdir
 Version:	2.20021109
 Release:	1
@@ -33,9 +33,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 This program creates 'font.dir' files for TrueType fonts. These files
 are required if you want to use TrueType fonts with X Window.
 
-%description -l pl
-Ten program tworzy pliki 'font.dir' dla fontów TrueType. S± one
-potrzebne, aby móc korzystaæ z fontów TrueType w X Window.
+%description -l pl.UTF-8
+Ten program tworzy pliki 'font.dir' dla fontÃ³w TrueType. SÄ… one
+potrzebne, aby mÃ³c korzystaÄ‡ z fontÃ³w TrueType w X Window.
 
 %prep
 %setup -q -n %{name}2
