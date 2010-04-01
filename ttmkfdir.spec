@@ -19,6 +19,7 @@ Patch5:		%{name}2-freetype2-port+cjk.patch
 Patch6:		%{name}2-encodings.patch
 Patch7:		%{name}2-nofileswithspaces.patch
 Patch8:		%{name}2-build.patch
+Patch9:		%{name}2-headers.patch
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.1
 BuildRequires:	libstdc++-devel
@@ -46,6 +47,7 @@ potrzebne, aby móc korzystać z fontów TrueType w X Window.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %build
 %{__make} clean
@@ -66,5 +68,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/*
-%{_mandir}/man1/*
+%attr(755,root,root) %{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*

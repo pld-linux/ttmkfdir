@@ -1,0 +1,10 @@
+--- ttmkfdir2/directory.cpp~	2010-04-02 00:23:58.000000000 +0200
++++ ttmkfdir2/directory.cpp	2010-04-02 00:29:13.000000000 +0200
+@@ -2,6 +2,7 @@
+ #include <dirent.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
++#include <string.h>
+ 
+ #include "directory.h"
+ 
