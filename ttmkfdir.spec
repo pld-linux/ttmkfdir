@@ -6,7 +6,8 @@ Release:	1
 Epoch:		1
 License:	unknown
 Group:		Applications/File
-Source0:	ftp://ftp.se.netbsd.org/pub/NetBSD/packages/distfiles/%{name}%{version}.tar.bz2
+URL:		http://people.redhat.com/yshao/
+Source0:	http://people.redhat.com/yshao/%{name}%{version}.tar.bz2
 # Source0-md5:	79e0401393c9728865aa73bb2bd68dd4
 Source1:	%{name}2.1
 Patch0:		%{name}2-libtool.patch
@@ -25,8 +26,8 @@ BuildRequires:	libtool
 Provides:	ttmkfdir2
 Obsoletes:	ttmkfdir2
 # our freetype1 < 1.3.1-4 (formerly freetype-1.x.x) contained old ttmkfdir
-Conflicts:	freetype1 < 1.3.1-4
 Conflicts:	freetype < 2.0.1
+Conflicts:	freetype1 < 1.3.1-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
