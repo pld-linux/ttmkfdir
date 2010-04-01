@@ -54,7 +54,8 @@ potrzebne, aby móc korzystać z fontów TrueType w X Window.
 %{__make} \
 	CXX="%{__cxx}" \
 	DEBUG="%{rpmcflags}" \
-	FREETYPE_BASE="/usr/include/freetype2"
+	FREETYPE_BASE="/usr/include/freetype2" \
+	FREETYPE_LIB="%{_libdir}/libfreetype.la"
 
 %install
 rm -rf $RPM_BUILD_ROOT
