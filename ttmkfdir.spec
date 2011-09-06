@@ -1,25 +1,24 @@
 Summary:	Tool for creating fonts.dir for TrueType fonts
 Summary(pl.UTF-8):	Narzędzie do tworzenia plików fonts.dir dla fontów TrueType
 Name:		ttmkfdir
-Version:	2.20021109
+Version:	3.0.9
 Release:	1
 Epoch:		1
-License:	unknown
+License:	LGPL v2+
 Group:		Applications/File
-URL:		http://people.redhat.com/yshao/
-Source0:	http://people.redhat.com/yshao/%{name}%{version}.tar.bz2
-# Source0-md5:	79e0401393c9728865aa73bb2bd68dd4
+Source0:	ftp://ftp.debian.org//debian/pool/main/t/ttmkfdir/%{name}_%{version}.orig.tar.gz
+# Source0-md5:	c22b8b7f8401fd924200c8e0e04a78f9
 Source1:	%{name}2.1
-Patch0:		%{name}2-libtool.patch
-Patch1:		%{name}2-foundrynames.patch
-Patch2:		%{name}2-gcc.patch
-Patch3:		%{name}2-iso10646.patch
-Patch4:		%{name}2-CJK-bugfix.patch
-Patch5:		%{name}2-freetype2-port+cjk.patch
-Patch6:		%{name}2-encodings.patch
-Patch7:		%{name}2-nofileswithspaces.patch
-Patch8:		%{name}2-build.patch
-Patch9:		%{name}2-headers.patch
+Patch0:		%{name}-3.0.9-cpp.patch
+Patch1:		%{name}-3.0.9-zlib.patch
+Patch2:		%{name}-3.0.9-fix-freetype217.patch
+Patch3:		%{name}-3.0.9-namespace.patch
+Patch4:		%{name}-3.0.9-fix-crash.patch
+Patch5:		%{name}-3.0.9-warnings.patch
+Patch6:		%{name}-3.0.9-segfaults.patch
+Patch7:		%{name}-3.0.9-encoding-dir.patch
+Patch8:		%{name}-3.0.9-font-scale.patch
+Patch9:		%{name}-3.0.9-bug434301.patch
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.1
 BuildRequires:	libstdc++-devel
@@ -40,28 +39,32 @@ Ten program tworzy pliki 'font.dir' dla fontów TrueType. Są one
 potrzebne, aby móc korzystać z fontów TrueType w X Window.
 
 %prep
-%setup -q -n %{name}2
+%setup -q
 %patch0 -p1
-%patch1 -p2
-%patch3 -p2
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
 
 %build
-%{__make} clean
 %{__make} \
 	CXX="%{__cxx}" \
-	DEBUG="%{rpmcflags}" \
+	DEBUG="%{rpmcflags} %{rpmcppflags}" \
 	FREETYPE_BASE="/usr/include/freetype2" \
 	FREETYPE_LIB="%{_libdir}/libfreetype.la"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man1}
+install -d $RPM_BUILD_ROOT%{_mandir}/man1
 
-install ttmkfdir $RPM_BUILD_ROOT%{_bindir}
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+
 install %{SOURCE1} $RPM_BUILD_ROOT%{_mandir}/man1/ttmkfdir.1
 
 %clean
