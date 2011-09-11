@@ -23,6 +23,7 @@ BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.1
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
+BuildRequires:	zlib-devel
 Provides:	ttmkfdir2
 Obsoletes:	ttmkfdir2
 # our freetype1 < 1.3.1-4 (formerly freetype-1.x.x) contained old ttmkfdir
@@ -54,9 +55,9 @@ potrzebne, aby móc korzystać z fontów TrueType w X Window.
 %build
 %{__make} \
 	CXX="%{__cxx}" \
-	DEBUG="%{rpmcflags} %{rpmcppflags}" \
-	FREETYPE_BASE="/usr/include/freetype2" \
-	FREETYPE_LIB="%{_libdir}/libfreetype.la"
+	DEBUG= \
+	OPTFLAGS="%{rpmcxxflags} %{rpmcppflags}" \
+	LDFLAGS='%{rpmldflags} $(FREETYPE_LIB) -lz'
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -72,5 +73,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc README
 %attr(755,root,root) %{_bindir}/%{name}
 %{_mandir}/man1/%{name}.1*
