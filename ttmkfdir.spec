@@ -2,7 +2,7 @@ Summary:	Tool for creating fonts.dir for TrueType fonts
 Summary(pl.UTF-8):	Narzędzie do tworzenia plików fonts.dir dla fontów TrueType
 Name:		ttmkfdir
 Version:	3.0.9
-Release:	1
+Release:	2
 Epoch:		1
 License:	LGPL v2+
 Group:		Applications/File
