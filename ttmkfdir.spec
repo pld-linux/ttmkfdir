@@ -6,7 +6,7 @@ Release:	2
 Epoch:		1
 License:	LGPL v2+
 Group:		Applications/File
-Source0:	ftp://ftp.debian.org//debian/pool/main/t/ttmkfdir/%{name}_%{version}.orig.tar.gz
+Source0:	http://ftp.debian.org//debian/pool/main/t/ttmkfdir/%{name}_%{version}.orig.tar.gz
 # Source0-md5:	c22b8b7f8401fd924200c8e0e04a78f9
 Source1:	%{name}2.1
 Patch0:		%{name}-3.0.9-cpp.patch
